@@ -117,20 +117,6 @@ pytest abilities/pdc_darts_notifications/tests/ -v
 
 ---
 
-## Getting Started
-
-### Prerequisites
-
-- Git
-- Python ≥ 3.10
-
-### Clone
-
-```bash
-git clone <your-repo-url>
-cd openclaw-abilities
-```
-
 ## Contributing
 
 1. Create a feature branch.
