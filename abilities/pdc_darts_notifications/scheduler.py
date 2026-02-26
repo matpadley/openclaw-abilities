@@ -44,7 +44,15 @@ def run_scheduler() -> None:
     Start the blocking APScheduler that calls :func:`check_and_notify`
     at a configurable interval.
     """
-    interval_hours = int(os.getenv("CHECK_INTERVAL_HOURS", "24"))
+    interval_str = os.getenv("CHECK_INTERVAL_HOURS", "24")
+    try:
+        interval_hours = int(interval_str)
+    except ValueError:
+        logger.warning(
+            "Invalid CHECK_INTERVAL_HOURS value %r; falling back to default of 24 hours.",
+            interval_str,
+        )
+        interval_hours = 24
 
     scheduler = BlockingScheduler()
     scheduler.add_job(
