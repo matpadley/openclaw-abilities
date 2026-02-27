@@ -4,6 +4,8 @@ test_scraper.py – Unit tests for the PDC tournament scraper.
 All HTTP calls are mocked so these tests run fully offline.
 """
 
+import importlib
+import os
 from datetime import date
 from unittest.mock import MagicMock, patch
 
@@ -11,6 +13,7 @@ import pytest
 import requests
 from bs4 import BeautifulSoup
 
+import abilities.pdc_darts_notifications.scraper as scraper_module
 from abilities.pdc_darts_notifications.scraper import (
     _parse_date,
     _parse_tournaments,
@@ -172,3 +175,19 @@ class TestFetchTournaments:
             mock_get.assert_called_once_with(
                 "https://example.com/custom", timeout=15
             )
+
+    def test_uses_env_var_url_by_default(self):
+        with patch.dict("os.environ", {"PDC_CALENDAR_URL": "https://example.com/env-url"}):
+            importlib.reload(scraper_module)
+            assert scraper_module.PDC_CALENDAR_URL == "https://example.com/env-url"
+
+        # Reload without the env var to restore state
+        env_without_url = {k: v for k, v in os.environ.items() if k != "PDC_CALENDAR_URL"}
+        with patch.dict("os.environ", env_without_url, clear=True):
+            importlib.reload(scraper_module)
+
+    def test_default_url_is_pdc_calendar(self):
+        env_without_url = {k: v for k, v in os.environ.items() if k != "PDC_CALENDAR_URL"}
+        with patch.dict("os.environ", env_without_url, clear=True):
+            importlib.reload(scraper_module)
+            assert scraper_module.PDC_CALENDAR_URL == "https://www.pdc.tv/calendar"

@@ -4,6 +4,7 @@ and returns a list of upcoming tournaments with their start dates.
 """
 
 import logging
+import os
 from datetime import date, datetime
 from typing import Optional
 
@@ -12,7 +13,7 @@ from bs4 import BeautifulSoup
 
 logger = logging.getLogger(__name__)
 
-PDC_CALENDAR_URL = "https://www.pdc.tv/calendar"
+PDC_CALENDAR_URL = os.getenv("PDC_CALENDAR_URL", "https://www.pdc.tv/calendar")
 
 # Selector priority list – the scraper tries each strategy in order so that it
 # can survive minor site redesigns without requiring a code change.
